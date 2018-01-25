@@ -1,0 +1,47 @@
+group 'patryk.piotrowski'
+version '1.0-SNAPSHOT'
+
+//sourceCompatibility = 1.8
+//
+//// Declares binary plugin and its required JavaFX classpath
+//apply from: "http://dl.bintray.com/content/shemnon/javafx-gradle/0.3.0/javafx.plugin"
+apply plugin: 'java'
+//
+//// Configures plugin
+//javafx {
+//    // Points to JDK and its JavaFX libraries, also declares target runtime JDK
+//    //javaRuntime = '/Library/Java/JavaVirtualMachines/jdk1.8.0_40.jdk'
+//
+//
+//    appID 'LifedApp'
+//    appName 'Life'
+//    mainClass 'patryk.piotrowski.Main'
+//
+//
+//
+//    signingMode 'release'
+//
+//}
+//
+//sourceSets {
+//    main {
+//        resources {
+//            srcDirs = ["src/main/java"]
+//            includes = ["**/*.fxml"]
+//        }
+//    }
+//}
+//
+//String getProjectProperty(String propertyName) {
+//    project.hasProperty(propertyName) ? project.property(propertyName) : null
+//}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'com.github.almasb', name: 'fxgl', version: '0.2.9'
+}
+
+
