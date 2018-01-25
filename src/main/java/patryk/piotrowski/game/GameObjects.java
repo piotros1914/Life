@@ -1,10 +1,9 @@
 package patryk.piotrowski.game;
 
-import javafx.scene.input.MouseEvent;
-import patryk.piotrowski.entity.Creature;
 import patryk.piotrowski.entity.Creatures;
-import patryk.piotrowski.entity.GameObjectsState;
+import patryk.piotrowski.enums.GameObjectsStateEnum;
 import patryk.piotrowski.entity.Sprite;
+import patryk.piotrowski.global.GameProperties;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,14 +14,14 @@ import java.util.List;
 public class GameObjects {
 
 
-    private GameObjectsState gameObjectsState;
+    private GameObjectsStateEnum gameObjectsState;
 
     private Creatures creatures;
 
     private List<Sprite> sprites;
 
     public GameObjects() {
-        gameObjectsState = GameObjectsState.NONREADY;
+        gameObjectsState = GameObjectsStateEnum.NONREADY;
         initCreatures();
         sprites = new ArrayList<Sprite>();
         sprites.addAll(creatures);
@@ -30,7 +29,7 @@ public class GameObjects {
     }
 
     private void initCreatures(){
-        creatures = new Creatures(GameOptions.numberInXAxis, GameOptions.numberInYAxis, GameOptions.size, GameOptions.gap);
+        creatures = new Creatures(GameProperties.numberInXAxis, GameProperties.numberInYAxis, GameProperties.size, GameProperties.gap);
     }
 
     public Creatures getCreatures() {
@@ -41,11 +40,11 @@ public class GameObjects {
         return sprites;
     }
 
-    public GameObjectsState getGameObjectsState() {
+    public GameObjectsStateEnum getGameObjectsState() {
         return gameObjectsState;
     }
 
-    public void setGameObjectsState(GameObjectsState gameObjectsState) {
+    public void setGameObjectsState(GameObjectsStateEnum gameObjectsState) {
         this.gameObjectsState = gameObjectsState;
     }
 }

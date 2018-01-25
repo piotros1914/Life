@@ -3,49 +3,58 @@ package patryk.piotrowski.game;
 import javafx.animation.AnimationTimer;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import patryk.piotrowski.entity.GameState;
+import patryk.piotrowski.enums.GameStateEnum;
 import patryk.piotrowski.entity.Sprite;
+import patryk.piotrowski.global.GameState;
 
 public class Game {
 
-    private GameStage gameStage;
+    private Stage stage;
+
+    private GameView gameView;
     private GameObjects gameObjects;
     private GameRules gameRules;
-
-    private GameState gameState = GameState.STOPPED;
+    private GameMenu gameMenu;
 
     public Game(Stage stage) {
-        gameStage = new GameStage( stage);
+        this.stage = stage;
     }
 
     public void start(){
         initGameObjects();
-        initEventListeners();
+        initView();
         initGameRules();
-        gameStage.drawFrame(gameObjects);
-        gameStage.show();
+        initEventListeners();
+        initGameState();
     }
-
-    private void  startGameLoop(){
-        gameState = GameState.STARTED;
-        new AnimationTimer() {
-            public void handle(long currentNanoTime) {
-                gameRules.updateGameObjects();
-                gameStage.drawFrame(gameObjects, currentNanoTime);
-                if(gameState.equals(GameState.STOPPED)){
-                    stop();
-                }
-            }
-        }.start();
-    }
-
-    private void stopGameLoop(){
-        gameState = GameState.STOPPED;
-    }
-
     private void  initGameObjects(){
         gameObjects = new GameObjects();
+    }
+
+    private void initView(){
+        initGameMenu();
+        initGameView();
+        BorderPane borderPane = new BorderPane();
+        borderPane.setTop(gameMenu.getMenuBar());
+        borderPane.setCenter(gameView.getPane());
+
+        Scene gameScene = new Scene(borderPane);
+
+        stage.setScene(gameScene);
+        stage.setResizable(false);
+        stage.show();
+
+        gameView.update(gameObjects);
+    }
+
+    private void initGameView(){
+        gameView = new GameView();
+    }
+
+    private void initGameMenu(){
+        gameMenu = new GameMenu();
     }
 
     private void initGameRules(){
@@ -53,28 +62,59 @@ public class Game {
     }
 
     private void initEventListeners(){
-        Scene gameScene = gameStage.getGameScene();
-        gameScene.setOnMouseClicked(event -> {
+        gameView.getPane().setOnMouseClicked(event -> {
             for(Sprite sprite : gameObjects.getSprites()){
-                sprite.onMouseClickedAction(event);
+                boolean isClicked = sprite.onMouseClickedAction(event);
+                if(isClicked){
+                    break;
+                }
             }
-            gameStage.drawFrame(gameObjects);
+            gameView.update(gameObjects);
         });
-        gameScene.setOnKeyReleased(event -> {
+
+        gameView.getPane().setOnKeyReleased(event -> {
             // akcja dla klawisza enter
             // włącza i wyłącza przebieg symulacji
             if(event.getCode().equals(KeyCode.ENTER)){
-                if( gameState.equals(GameState.STOPPED)){
+                if( GameState.get().equals(GameStateEnum.STOPPED)){
                     startGameLoop();
                 } else{
                     stopGameLoop();
                 }
             }
         });
+
+        gameMenu.getStartMenuItem().setOnAction(event -> {
+            if( GameState.get().equals(GameStateEnum.STOPPED)){
+                startGameLoop();
+            }
+        });
+
+        gameMenu.getStopMenuItem().setOnAction(event -> {
+            if( GameState.get().equals(GameStateEnum.STARTED)){
+                stopGameLoop();
+            }
+        });
     }
 
+    private void initGameState() {
+        GameState.set(GameStateEnum.STOPPED);
+    }
 
+    private void  startGameLoop(){
+        GameState.set(GameStateEnum.STARTED);
+        new AnimationTimer() {
+            public void handle(long currentNanoTime) {
+                gameRules.updateGameObjects();
+                gameView.update(gameObjects, currentNanoTime);
+                if(GameState.get().equals(GameStateEnum.STOPPED)){
+                    stop();
+                }
+            }
+        }.start();
+    }
 
-
-
+    private void stopGameLoop(){
+        GameState.set(GameStateEnum.STOPPED);
+    }
 }

@@ -1,62 +1,49 @@
 package patryk.piotrowski.game;
 
-import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import javafx.stage.Stage;
 import patryk.piotrowski.entity.Creature;
-import patryk.piotrowski.entity.GameObjectsState;
+import patryk.piotrowski.enums.GameObjectsStateEnum;
+import patryk.piotrowski.global.GameProperties;
 
-public class GameStage  {
+public class GameView {
 
-    private Stage stage;
-    private Scene gameScene;
     private StackPane pane;
     private Canvas canvas;
     private GraphicsContext gc;
 
-    public GameStage(Stage stage) {
-        this.stage = stage;
+    public GameView() {
         canvas = new Canvas();
-        canvas.setWidth(GameOptions.getWidth());
-        canvas.setHeight(GameOptions.getHeight());
+        canvas.setWidth(GameProperties.getWidth());
+        canvas.setHeight(GameProperties.getHeight());
+
+        gc = canvas.getGraphicsContext2D();
 
         pane = new StackPane();
         pane.setStyle("-fx-background-color: white;");
         pane.getChildren().add(canvas);
-
-        gc = canvas.getGraphicsContext2D();
-
-        gameScene = new Scene(pane);
-        stage.setScene(gameScene);
-        stage.setResizable(false);
-
-    }
-
-    public void show(){
-        stage.show();
     }
 
     private long lastFrameTime = System.nanoTime();
 
-    public void drawFrame(GameObjects gameObjects, long currentNanoTime){
+
+
+
+    public void update(GameObjects gameObjects, long currentNanoTime){
         long deltaTime = currentNanoTime - lastFrameTime;
-        if( deltaTime > GameOptions.frameTime){
+        if( deltaTime > GameProperties.frameTime){
             lastFrameTime = currentNanoTime;
-            gameObjects.setGameObjectsState(GameObjectsState.NONREADY);
-            drawFrame(gameObjects);
+            gameObjects.setGameObjectsState(GameObjectsStateEnum.NONREADY);
+            update(gameObjects);
         }
     }
 
-    public void drawFrame (GameObjects gameObjects){
+    public void update (GameObjects gameObjects){
         clear();
         Creature[][] creatures = gameObjects.getCreatures().getCreatures2DArray();
-        for (int i = 0; i < GameOptions.numberInYAxis; i++){
-            for (int j = 0; j < GameOptions.numberInXAxis; j++) {
+        for (int i = 0; i < GameProperties.numberInYAxis; i++){
+            for (int j = 0; j < GameProperties.numberInXAxis; j++) {
                 drawImage(creatures[i][j]);
             }
         }
@@ -89,7 +76,11 @@ public class GameStage  {
         gc.clearRect(0, 0, pane.getWidth(), pane.getHeight());
    }
 
-    public Scene getGameScene() {
-        return gameScene;
+    public StackPane getPane() {
+        return pane;
+    }
+
+    public void setPane(StackPane pane) {
+        this.pane = pane;
     }
 }

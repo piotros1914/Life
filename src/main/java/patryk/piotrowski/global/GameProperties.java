@@ -1,6 +1,6 @@
-package patryk.piotrowski.game;
+package patryk.piotrowski.global;
 
-public  class GameOptions {
+public class GameProperties {
 
    public static final int size = 25;
    public static final int numberInXAxis = 50;

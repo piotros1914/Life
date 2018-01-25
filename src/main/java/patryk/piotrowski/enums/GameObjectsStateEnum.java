@@ -1,9 +1,9 @@
-package patryk.piotrowski.entity;
+package patryk.piotrowski.enums;
 
 /**
  * Created by piotr on 22.01.2018.
  */
-public enum GameObjectsState {
+public enum GameObjectsStateEnum {
 
     READY, NONREADY;
 }
